@@ -119,9 +119,14 @@
                 </ul>
             </div>
 
-            <button class="btn-primary" style="width: 100%; justify-content: center; font-weight: 800; padding: 1rem;" onclick="alert('[DN-AI] 조치 스크립트 실행 승인됨: 런북 절차에 따라 자동 복구 시나리오를 시작합니다.')">
-                자동 복구 실행 (Auto Remediate)
-            </button>
+            <div style="display: flex; gap: 0.75rem;">
+                <button class="btn-primary" style="flex: 1; justify-content: center; font-weight: 800; padding: 1rem;" onclick="alert('[DN-AI] 조치 스크립트 실행 승인됨: 런북 절차에 따라 자동 복구 시나리오를 시작합니다.')">
+                    자동 복구 실행
+                </button>
+                <button class="btn-primary" style="width: 50px; justify-content: center; background: rgba(255,255,255,0.1); box-shadow: none;" onclick="openEvolveModal('{{ event.event_type }}')">
+                    ✨
+                </button>
+            </div>
         </div>
         {% empty %}
         <div class="glass-card" style="padding: 3rem; text-align: center; color: var(--text-dim); background: rgba(255,255,255,0.02);">
@@ -133,6 +138,26 @@
     </div>
 </div>
 
+<!-- Knowledge Evolution Modal -->
+<div id="evolveModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center;">
+    <div class="glass-card" style="width: 90%; max-width: 500px; padding: 2rem; border-color: var(--dn-blue);">
+        <h3 style="margin-top: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; color: var(--dn-blue-light);">
+            ✨ AI 지식 베이스 강화
+        </h3>
+        <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 1.5rem;">
+            현장 운영 노하우를 서술형으로 입력해주세요. AI가 기존 런북을 분석하여 지식을 최적화하고 지능적으로 업데이트합니다.
+        </p>
+        
+        <input type="hidden" id="evolveEventType">
+        <textarea id="evolveInsight" style="width: 100%; height: 150px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: 12px; color: white; padding: 1rem; font-family: inherit; font-size: 0.9rem; margin-bottom: 1.5rem; resize: none;" placeholder="예: 어제 낙뢰 공사 시에는 전용 회선 복구보다 상단 UPS 전압 안정을 먼저 확인하는 것이 훨씬 효율적이었습니다."></textarea>
+        
+        <div style="display: flex; gap: 1rem;">
+            <button class="btn-primary" style="flex: 1; justify-content: center;" onclick="submitEvolution()">지식 업데이트 요청</button>
+            <button class="btn-primary" style="flex: 0.4; justify-content: center; background: transparent; border: 1px solid var(--border-color); box-shadow: none;" onclick="closeEvolveModal()">취소</button>
+        </div>
+    </div>
+</div>
+
 <script>
     function updateTime() {
         const now = new Date();
@@ -140,5 +165,58 @@
     }
     setInterval(updateTime, 1000);
     updateTime();
+
+    function openEvolveModal(eventType) {
+        document.getElementById('evolveEventType').value = eventType;
+        document.getElementById('evolveModal').style.display = 'flex';
+        document.getElementById('evolveInsight').focus();
+    }
+
+    function closeEvolveModal() {
+        document.getElementById('evolveModal').style.display = 'none';
+        document.getElementById('evolveInsight').value = '';
+    }
+
+    async function submitEvolution() {
+        const eventType = document.getElementById('evolveEventType').value;
+        const insight = document.getElementById('evolveInsight').value;
+        
+        if (!insight.trim()) {
+            alert('업데이트할 지침 내용을 가입해주세요.');
+            return;
+        }
+
+        const btn = event.target;
+        btn.disabled = true;
+        btn.textContent = 'AI 분석 및 업데이트 중...';
+
+        try {
+            const response = await fetch('/api/update-runbook/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    event_type: eventType,
+                    insight: insight
+                })
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert('✨ ' + result.message + '\n런북 지식 베이스가 성공적으로 확장되었습니다.');
+                closeEvolveModal();
+                location.reload(); // 런북 업데이트 반영을 위해 새로고침
+            } else {
+                alert('오류: ' + result.error);
+            }
+        } catch (e) {
+            alert('요청 중 오류가 발생했습니다.');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = '지식 업데이트 요청';
+        }
+    }
 </script>
 {% endblock %}

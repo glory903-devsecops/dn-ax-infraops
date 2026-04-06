@@ -137,6 +137,18 @@
                         </td>
                     </tr>
                     
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                        <td style="padding: 1.25rem 0.5rem; font-weight: 700; color: var(--dn-blue-light);">DN-Cloud-Storage-NAS</td>
+                        <td style="padding: 1.25rem 0.5rem; font-size: 0.85rem; color: var(--text-dim);">글로벌 통합 파일 스토리지 (NetApp)</td>
+                        <td style="padding: 1.25rem 0.5rem; font-family: monospace; font-size: 0.9rem;">10.10.20.50</td>
+                        <td style="padding: 1.25rem 0.5rem; text-align: right;">
+                            <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.6rem; background: rgba(16, 185, 129, 0.1); border-radius: 20px; color: var(--status-ok); font-size: 0.75rem; font-weight: 700;">
+                                <div style="width: 6px; height: 6px; background: var(--status-ok); border-radius: 50%;"></div>
+                                정상 가동
+                            </div>
+                        </td>
+                    </tr>
+                    
                 </tbody>
             </table>
         </div>
@@ -197,63 +209,36 @@
                 </ul>
             </div>
 
-            <button class="btn-primary" style="width: 100%; justify-content: center; font-weight: 800; padding: 1rem;" onclick="alert('[DN-AI] 조치 스크립트 실행 승인됨: 런북 절차에 따라 자동 복구 시나리오를 시작합니다.')">
-                자동 복구 실행 (Auto Remediate)
-            </button>
+            <div style="display: flex; gap: 0.75rem;">
+                <button class="btn-primary" style="flex: 1; justify-content: center; font-weight: 800; padding: 1rem;" onclick="alert('[DN-AI] 조치 스크립트 실행 승인됨: 런북 절차에 따라 자동 복구 시나리오를 시작합니다.')">
+                    자동 복구 실행
+                </button>
+                <button class="btn-primary" style="width: 50px; justify-content: center; background: rgba(255,255,255,0.1); box-shadow: none;" onclick="openEvolveModal('LINK_DOWN')">
+                    ✨
+                </button>
+            </div>
         </div>
         
-        <div class="glass-card" style="padding: 1.5rem; border: 1px solid rgba(0, 94, 187, 0.4); background: linear-gradient(165deg, rgba(0, 94, 187, 0.2) 0%, rgba(13, 17, 23, 1) 100%);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--dn-blue-light); font-weight: 800; font-size: 0.9rem; letter-spacing: 0.05rem;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12L2.69 6.5"></path><path d="M12 12V21.98"></path><path d="M12 12L21.31 6.5"></path></svg>
-                    AI 분석 레포트
-                </div>
-                <div style="padding: 0.2rem 0.6rem; background: var(--status-error); border-radius: 4px; font-size: 0.7rem; font-weight: 900; color: white;">긴급 장애</div>
-            </div>
-            
-            <div style="margin-bottom: 1.5rem; border-left: 2px solid var(--border-color); padding-left: 1rem;">
-                <div style="font-size: 1.2rem; font-weight: 800; margin-bottom: 0.25rem;">DN-Factory-CW-Line1</div>
-                <div style="color: var(--status-warn); font-size: 0.85rem; font-weight: 600;">Average RTT: 452ms. Threshold: 200ms.</div>
-            </div>
+    </div>
+</div>
 
-            <div style="background: rgba(0, 94, 187, 0.1); padding: 1.25rem; border-radius: 12px; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.05);">
-                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.5rem; text-transform: uppercase;">런북 대응 요약</div>
-                창원 공장 생산 1라인 게이트웨이의 지연 시간이 임계치를 초과하였습니다.
-            </div>
-
-            <div style="margin-bottom: 1.5rem;">
-                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase;">예상 원인 분석</div>
-                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                    
-                    <span style="padding: 0.3rem 0.7rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-size: 0.75rem; color: var(--status-warn);"># 생산 라인 센서 데이터 폭증</span>
-                    
-                    <span style="padding: 0.3rem 0.7rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-size: 0.75rem; color: var(--status-warn);"># 네트워크 루프 발생 의심</span>
-                    
-                </div>
-            </div>
-
-            <div style="margin-bottom: 1.5rem;">
-                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase;">단계별 조치 가이드</div>
-                <ul style="list-style: none; padding: 0;">
-                    
-                    <li style="display: flex; gap: 0.75rem; margin-bottom: 0.8rem; font-size: 0.85rem; align-items: flex-start;">
-                        <div style="width: 20px; height: 20px; background: var(--dn-blue); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0; margin-top: 2px;">1</div>
-                        <div style="color: #e5e7eb;">L2 스위치 MAC 플래핑 여부 체크</div>
-                    </li>
-                    
-                    <li style="display: flex; gap: 0.75rem; margin-bottom: 0.8rem; font-size: 0.85rem; align-items: flex-start;">
-                        <div style="width: 20px; height: 20px; background: var(--dn-blue); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0; margin-top: 2px;">2</div>
-                        <div style="color: #e5e7eb;">의심되는 포트에 트래픽 셰이핑 적용</div>
-                    </li>
-                    
-                </ul>
-            </div>
-
-            <button class="btn-primary" style="width: 100%; justify-content: center; font-weight: 800; padding: 1rem;" onclick="alert('[DN-AI] 조치 스크립트 실행 승인됨: 런북 절차에 따라 자동 복구 시나리오를 시작합니다.')">
-                자동 복구 실행 (Auto Remediate)
-            </button>
-        </div>
+<!-- Knowledge Evolution Modal -->
+<div id="evolveModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center;">
+    <div class="glass-card" style="width: 90%; max-width: 500px; padding: 2rem; border-color: var(--dn-blue);">
+        <h3 style="margin-top: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; color: var(--dn-blue-light);">
+            ✨ AI 지식 베이스 강화
+        </h3>
+        <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 1.5rem;">
+            현장 운영 노하우를 서술형으로 입력해주세요. AI가 기존 런북을 분석하여 지식을 최적화하고 지능적으로 업데이트합니다.
+        </p>
         
+        <input type="hidden" id="evolveEventType">
+        <textarea id="evolveInsight" style="width: 100%; height: 150px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: 12px; color: white; padding: 1rem; font-family: inherit; font-size: 0.9rem; margin-bottom: 1.5rem; resize: none;" placeholder="예: 어제 낙뢰 공사 시에는 전용 회선 복구보다 상단 UPS 전압 안정을 먼저 확인하는 것이 훨씬 효율적이었습니다."></textarea>
+        
+        <div style="display: flex; gap: 1rem;">
+            <button class="btn-primary" style="flex: 1; justify-content: center;" onclick="submitEvolution()">지식 업데이트 요청</button>
+            <button class="btn-primary" style="flex: 0.4; justify-content: center; background: transparent; border: 1px solid var(--border-color); box-shadow: none;" onclick="closeEvolveModal()">취소</button>
+        </div>
     </div>
 </div>
 
@@ -264,8 +249,57 @@
     }
     setInterval(updateTime, 1000);
     updateTime();
-</script>
 
-    </div>
-</body>
-</html>
+    function openEvolveModal(eventType) {
+        document.getElementById('evolveEventType').value = eventType;
+        document.getElementById('evolveModal').style.display = 'flex';
+        document.getElementById('evolveInsight').focus();
+    }
+
+    function closeEvolveModal() {
+        document.getElementById('evolveModal').style.display = 'none';
+        document.getElementById('evolveInsight').value = '';
+    }
+
+    
+    async function submitEvolution() {
+        const insight = document.getElementById('evolveInsight').value;
+        if (!insight.trim()) { alert('지침 내용을 입력해주세요.'); return; }
+        
+        const btn = event.target;
+        btn.disabled = true;
+        btn.innerHTML = 'AI 지식 분석 및 통합 중... (시뮬레이션)';
+        
+        // 지능형 학습 연출을 위한 딜레이
+        await new Promise(r => setTimeout(r, 2000));
+        
+        alert('✨ [AI 지능형 학습 완료]\n\n입력하신 노하우를 분석하여 런북 지식 베이스를 v1.1로 업데이트했습니다.\n\n추가된 내용: ' + insight.substring(0,30) + '...');
+        
+        // 화면 레이아웃에 실시간 지식 추가 효과 연출
+        const aiPanel = document.querySelector('.glass-card[style*="linear-gradient"]');
+        if (aiPanel) {
+            const lessonsLearned = document.createElement('div');
+            lessonsLearned.style.marginTop = '1.5rem';
+            lessonsLearned.style.padding = '1rem';
+            lessonsLearned.style.background = 'rgba(16, 185, 129, 0.1)';
+            lessonsLearned.style.border = '1px dashed var(--status-ok)';
+            lessonsLearned.style.borderRadius = '8px';
+            lessonsLearned.innerHTML = '<div style="font-size:0.75rem; font-weight:800; color:var(--status-ok); margin-bottom:0.5rem;">📝 LESSONS LEARNED (AUTO-UPDATED)</div><div style="font-size:0.85rem; color:#e5e7eb;">' + insight + '</div>';
+            aiPanel.appendChild(lessonsLearned);
+        }
+        
+        closeEvolveModal();
+    }
+    
+
+        const btn = event.target;
+        btn.disabled = true;
+        btn.textContent = 'AI 분석 및 업데이트 중...';
+
+        try {
+            const response = await fetch('/api/update-runbook/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': ''
+                
