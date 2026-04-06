@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DN Solutions | InfraOps Copilot</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap">
+    <link rel="stylesheet" href="./static/css/style.css">
+    
+</head>
+<body>
+    <div class="container" style="max-width: 1440px; margin: 0 auto; padding: 2rem;">
+        <nav style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+            <div style="font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px;">
+                <span style="color: var(--dn-blue);">DN</span> <span style="opacity: 0.8; color: white;">Solutions | InfraOps Copilot</span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div style="background: rgba(0, 94, 187, 0.1); border: 1px solid var(--dn-blue); color: var(--dn-blue); padding: 5px 15px; border-radius: 999px; font-size: 0.8rem; font-weight: 600;">PRO VERSION</div>
+            </div>
+        </nav>
+        
+<!-- Header Stats -->
+<section style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2.5rem;">
+    <div class="glass-card" style="padding: 1.5rem; position: relative; overflow: hidden;">
+        <div style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05rem;">Total Availability</div>
+        <div style="font-size: 2rem; font-weight: 800; color: var(--dn-blue-light);">99.98%</div>
+        <div style="color: var(--status-ok); font-size: 0.75rem; margin-top: 0.5rem; display: flex; align-items: center; gap: 0.25rem;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"></polyline></svg>
+            0.01% vs Last Week
+        </div>
+    </div>
+    <div class="glass-card" style="padding: 1.5rem;">
+        <div style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05rem;">Managed Nodes</div>
+        <div style="font-size: 2rem; font-weight: 800;">13</div>
+        <div style="font-size: 0.75rem; margin-top: 0.5rem; color: var(--text-dim);">DN Global Business Sites</div>
+    </div>
+    <div class="glass-card" style="padding: 1.5rem; border-left: 4px solid var(--status-error);">
+        <div style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05rem;">Active Incidents</div>
+        <div style="font-size: 2rem; font-weight: 800; color: var(--status-error);"></div>
+        <div style="font-size: 0.75rem; margin-top: 0.5rem; color: var(--status-error);">Critical Intervention Required</div>
+    </div>
+    <div class="glass-card" style="padding: 1.5rem; background: linear-gradient(135deg, rgba(0, 94, 187, 0.1) 0%, transparent 100%);">
+        <div style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05rem;">AI Copilot Engine</div>
+        <div style="font-size: 2rem; font-weight: 800;">ON</div>
+        <div style="color: var(--status-ok); font-size: 0.75rem; margin-top: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+            <div style="width: 8px; height: 8px; background: var(--status-ok); border-radius: 50%; box-shadow: 0 0 10px var(--status-ok);"></div>
+            Connected to GPT-4o
+        </div>
+    </div>
+</section>
+
+<!-- Main Grid -->
+<div style="display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 1.5rem; align-items: start;">
+    
+    <!-- Left Column: Infrastructure Status -->
+    <div class="glass-card" style="padding: 0; overflow: hidden;">
+        <div style="padding: 1.5rem 2rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 0.75rem;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                DN Network Topology Overview
+            </div>
+            <div style="padding: 0.4rem 0.8rem; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.8rem; color: var(--text-dim);">
+                Last Scan: <span id="current-time"></span>
+            </div>
+        </div>
+        
+        <div style="padding: 1rem 2rem 2rem;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="color: var(--text-dim); text-align: left; font-size: 0.85rem; border-bottom: 1px solid var(--border-color);">
+                        <th style="padding: 1rem 0.5rem;">Target Node</th>
+                        <th style="padding: 1rem 0.5rem;">Site / Description</th>
+                        <th style="padding: 1rem 0.5rem;">Primary IP</th>
+                        <th style="padding: 1rem 0.5rem; text-align: right;">Health</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                        <td style="padding: 1.25rem 0.5rem; font-weight: 700; color: var(--dn-blue-light);">DN-HQ-Core-Backbone</td>
+                        <td style="padding: 1.25rem 0.5rem; font-size: 0.85rem; color: var(--text-dim);">서울 본사 코어 백본 스위치 (Nexus 9K)</td>
+                        <td style="padding: 1.25rem 0.5rem; font-family: monospace; font-size: 0.9rem;">10.0.0.1</td>
+                        <td style="padding: 1.25rem 0.5rem; text-align: right;">
+                            <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.6rem; background: rgba(16, 185, 129, 0.1); border-radius: 20px; color: var(--status-ok); font-size: 0.75rem; font-weight: 700;">
+                                <div style="width: 6px; height: 6px; background: var(--status-ok); border-radius: 50%;"></div>
+                                ACTIVE
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                        <td style="padding: 1.25rem 0.5rem; font-weight: 700; color: var(--dn-blue-light);">DN-Factory-CW-Line1</td>
+                        <td style="padding: 1.25rem 0.5rem; font-size: 0.85rem; color: var(--text-dim);">창원 공장 생산 1라인 게이트웨이</td>
+                        <td style="padding: 1.25rem 0.5rem; font-family: monospace; font-size: 0.9rem;">172.16.10.1</td>
+                        <td style="padding: 1.25rem 0.5rem; text-align: right;">
+                            <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.6rem; background: rgba(16, 185, 129, 0.1); border-radius: 20px; color: var(--status-ok); font-size: 0.75rem; font-weight: 700;">
+                                <div style="width: 6px; height: 6px; background: var(--status-ok); border-radius: 50%;"></div>
+                                ACTIVE
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                        <td style="padding: 1.25rem 0.5rem; font-weight: 700; color: var(--dn-blue-light);">DN-Global-Sales-EU</td>
+                        <td style="padding: 1.25rem 0.5rem; font-size: 0.85rem; color: var(--text-dim);">유럽 법인(Germany) 거점 VPN 라우터</td>
+                        <td style="padding: 1.25rem 0.5rem; font-family: monospace; font-size: 0.9rem;">192.168.100.5</td>
+                        <td style="padding: 1.25rem 0.5rem; text-align: right;">
+                            <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.6rem; background: rgba(16, 185, 129, 0.1); border-radius: 20px; color: var(--status-ok); font-size: 0.75rem; font-weight: 700;">
+                                <div style="width: 6px; height: 6px; background: var(--status-ok); border-radius: 50%;"></div>
+                                ACTIVE
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                        <td style="padding: 1.25rem 0.5rem; font-weight: 700; color: var(--dn-blue-light);">DN-R&amp;D-Center-ASIC</td>
+                        <td style="padding: 1.25rem 0.5rem; font-size: 0.85rem; color: var(--text-dim);">R&amp;D 센터 전용 설계 인프라 노드</td>
+                        <td style="padding: 1.25rem 0.5rem; font-family: monospace; font-size: 0.9rem;">10.50.0.10</td>
+                        <td style="padding: 1.25rem 0.5rem; text-align: right;">
+                            <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.6rem; background: rgba(16, 185, 129, 0.1); border-radius: 20px; color: var(--status-ok); font-size: 0.75rem; font-weight: 700;">
+                                <div style="width: 6px; height: 6px; background: var(--status-ok); border-radius: 50%;"></div>
+                                ACTIVE
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                        <td style="padding: 1.25rem 0.5rem; font-weight: 700; color: var(--dn-blue-light);">DN-Cloud-Bridge-AWS</td>
+                        <td style="padding: 1.25rem 0.5rem; font-size: 0.85rem; color: var(--text-dim);">하이브리드 클라우드 전용 회선 (Direct Connect)</td>
+                        <td style="padding: 1.25rem 0.5rem; font-family: monospace; font-size: 0.9rem;">44.200.1.5</td>
+                        <td style="padding: 1.25rem 0.5rem; text-align: right;">
+                            <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.6rem; background: rgba(16, 185, 129, 0.1); border-radius: 20px; color: var(--status-ok); font-size: 0.75rem; font-weight: 700;">
+                                <div style="width: 6px; height: 6px; background: var(--status-ok); border-radius: 50%;"></div>
+                                ACTIVE
+                            </div>
+                        </td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Right Column: AI Copilot Analysis -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <div class="glass-card" style="padding: 1.5rem; border: 1px solid rgba(0, 94, 187, 0.4); background: linear-gradient(165deg, rgba(0, 94, 187, 0.2) 0%, rgba(13, 17, 23, 1) 100%);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--dn-blue-light); font-weight: 800; font-size: 0.9rem; letter-spacing: 0.05rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12L2.69 6.5"></path><path d="M12 12V21.98"></path><path d="M12 12L21.31 6.5"></path></svg>
+                    AI COPILOT ANALYSIS
+                </div>
+                <div style="padding: 0.2rem 0.6rem; background: var(--status-error); border-radius: 4px; font-size: 0.7rem; font-weight: 900; color: white;">CRITICAL</div>
+            </div>
+            
+            <div style="margin-bottom: 1.5rem; border-left: 2px solid var(--border-color); padding-left: 1rem;">
+                <div style="font-size: 1.2rem; font-weight: 800; margin-bottom: 0.25rem;">DN-HQ-Core-Backbone</div>
+                <div style="color: var(--status-warn); font-size: 0.85rem; font-weight: 600;">Interface Ethernet 1/1 (Primary) is DOWN. Protocol status down.</div>
+            </div>
+
+            <div style="background: rgba(0, 94, 187, 0.1); padding: 1.25rem; border-radius: 12px; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.5rem; text-transform: uppercase;">Runbook Summary</div>
+                DN-HQ-Core-Backbone에서 주 회선(Primary) 단절이 감지되어 백업 회선으로 자동 Failover 중입니다.
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase;">Primary Causes</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                    
+                    <span style="padding: 0.3rem 0.7rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-size: 0.75rem; color: var(--status-warn);"># 외부 광케이블 굴착 공사 물리적 단절</span>
+                    
+                    <span style="padding: 0.3rem 0.7rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-size: 0.75rem; color: var(--status-warn);"># SFP 모듈 하드웨어 결함</span>
+                    
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase;">Step-by-Step Remediation</div>
+                <ul style="list-style: none; padding: 0;">
+                    
+                    <li style="display: flex; gap: 0.75rem; margin-bottom: 0.8rem; font-size: 0.85rem; align-items: flex-start;">
+                        <div style="width: 20px; height: 20px; background: var(--dn-blue); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0; margin-top: 2px;">1</div>
+                        <div style="color: #e5e7eb;">Cisco &#x27;show interface status&#x27; 명령어로 포트 상태 확인</div>
+                    </li>
+                    
+                    <li style="display: flex; gap: 0.75rem; margin-bottom: 0.8rem; font-size: 0.85rem; align-items: flex-start;">
+                        <div style="width: 20px; height: 20px; background: var(--dn-blue); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0; margin-top: 2px;">2</div>
+                        <div style="color: #e5e7eb;">통신사(KT) 글로벌 회선 장애 센터 티켓 오픈 확인</div>
+                    </li>
+                    
+                    <li style="display: flex; gap: 0.75rem; margin-bottom: 0.8rem; font-size: 0.85rem; align-items: flex-start;">
+                        <div style="width: 20px; height: 20px; background: var(--dn-blue); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0; margin-top: 2px;">3</div>
+                        <div style="color: #e5e7eb;">백업 트래픽 점유율 모니터링</div>
+                    </li>
+                    
+                </ul>
+            </div>
+
+            <button class="btn-primary" style="width: 100%; justify-content: center; font-weight: 800; padding: 1rem;" onclick="alert('[DN-AI] 조치 스크립트 실행 승인됨: 런북 절차에 따라 자동 복구 시퀸스를 시작합니다.')">
+                EXECUTE REMEDIATION
+            </button>
+        </div>
+        
+        <div class="glass-card" style="padding: 1.5rem; border: 1px solid rgba(0, 94, 187, 0.4); background: linear-gradient(165deg, rgba(0, 94, 187, 0.2) 0%, rgba(13, 17, 23, 1) 100%);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--dn-blue-light); font-weight: 800; font-size: 0.9rem; letter-spacing: 0.05rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12L2.69 6.5"></path><path d="M12 12V21.98"></path><path d="M12 12L21.31 6.5"></path></svg>
+                    AI COPILOT ANALYSIS
+                </div>
+                <div style="padding: 0.2rem 0.6rem; background: var(--status-error); border-radius: 4px; font-size: 0.7rem; font-weight: 900; color: white;">CRITICAL</div>
+            </div>
+            
+            <div style="margin-bottom: 1.5rem; border-left: 2px solid var(--border-color); padding-left: 1rem;">
+                <div style="font-size: 1.2rem; font-weight: 800; margin-bottom: 0.25rem;">DN-Factory-CW-Line1</div>
+                <div style="color: var(--status-warn); font-size: 0.85rem; font-weight: 600;">Average RTT: 452ms. Threshold: 200ms.</div>
+            </div>
+
+            <div style="background: rgba(0, 94, 187, 0.1); padding: 1.25rem; border-radius: 12px; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.5rem; text-transform: uppercase;">Runbook Summary</div>
+                창원 공장 생산 1라인 게이트웨이의 지연 시간이 임계치를 초과하였습니다.
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase;">Primary Causes</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                    
+                    <span style="padding: 0.3rem 0.7rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-size: 0.75rem; color: var(--status-warn);"># 생산 라인 센서 데이터 폭증</span>
+                    
+                    <span style="padding: 0.3rem 0.7rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-size: 0.75rem; color: var(--status-warn);"># 네트워크 루프 발생 의심</span>
+                    
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase;">Step-by-Step Remediation</div>
+                <ul style="list-style: none; padding: 0;">
+                    
+                    <li style="display: flex; gap: 0.75rem; margin-bottom: 0.8rem; font-size: 0.85rem; align-items: flex-start;">
+                        <div style="width: 20px; height: 20px; background: var(--dn-blue); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0; margin-top: 2px;">1</div>
+                        <div style="color: #e5e7eb;">L2 스위치 MAC 플래핑 여부 체크</div>
+                    </li>
+                    
+                    <li style="display: flex; gap: 0.75rem; margin-bottom: 0.8rem; font-size: 0.85rem; align-items: flex-start;">
+                        <div style="width: 20px; height: 20px; background: var(--dn-blue); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0; margin-top: 2px;">2</div>
+                        <div style="color: #e5e7eb;">의심되는 포트에 트래픽 셰이핑 적용</div>
+                    </li>
+                    
+                </ul>
+            </div>
+
+            <button class="btn-primary" style="width: 100%; justify-content: center; font-weight: 800; padding: 1rem;" onclick="alert('[DN-AI] 조치 스크립트 실행 승인됨: 런북 절차에 따라 자동 복구 시퀸스를 시작합니다.')">
+                EXECUTE REMEDIATION
+            </button>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    function updateTime() {
+        const now = new Date();
+        document.getElementById('current-time').textContent = now.toLocaleTimeString('ko-KR');
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+</script>
+
+    </div>
+</body>
+</html>

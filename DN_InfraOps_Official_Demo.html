@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DN Solutions | InfraOps Copilot Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dn-blue: #005EBB;
+            --dn-blue-light: #0B50F2;
+            --bg-dark: #0B0E14;
+            --card-bg: rgba(23, 27, 34, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-main: #FFFFFF;
+            --text-dim: #94A3B8;
+            --status-ok: #10B981;
+            --status-warn: #F59E0B;
+            --status-err: #EF4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, rgba(0, 94, 187, 0.1) 0%, transparent 50%);
+        }
+
+        /* Hero Background */
+        .header-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 60vh;
+            background: linear-gradient(180deg, rgba(0, 94, 187, 0.05) 0%, transparent 100%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo span:first-child { color: var(--dn-blue); }
+        .logo span:last-child { opacity: 0.8; }
+        
+        .badge {
+            background: rgba(0, 94, 187, 0.1);
+            border: 1px solid var(--dn-blue);
+            color: var(--dn-blue);
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 20px;
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover { transform: translateY(-5px); border-color: rgba(0, 94, 187, 0.3); }
+        .stat-label { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .stat-value { font-size: 1.8rem; font-weight: 700; }
+        .stat-trend { font-size: 0.8rem; margin-top: 0.5rem; }
+        .stat-trend.up { color: var(--status-ok); }
+
+        /* Main Grid */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Monitoring Targets */
+        .target-list {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2rem;
+        }
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .target-item {
+            display: grid;
+            grid-template-columns: 40px 1.5fr 1fr 1fr 1fr;
+            align-items: center;
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+        }
+        .target-item:last-child { border-bottom: none; }
+        .target-item:hover { background: rgba(255, 255, 255, 0.03); border-radius: 12px; }
+
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .status-dot.active { background: var(--status-ok); box-shadow: 0 0 10px var(--status-ok); animation: pulse 2s infinite; }
+        .status-dot.error { background: var(--status-err); box-shadow: 0 0 10px var(--status-err); }
+        
+        .target-name { font-weight: 600; }
+        .target-meta { font-size: 0.85rem; color: var(--text-dim); }
+
+        /* AI Copilot Panel */
+        .copilot-panel {
+            background: linear-gradient(135deg, rgba(0, 94, 187, 0.15) 0%, rgba(11, 80, 242, 0.05) 100%);
+            border: 1px solid rgba(0, 94, 187, 0.3);
+            border-radius: 24px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .copilot-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            color: var(--dn-blue-light);
+        }
+        .ai-message {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.25rem;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--dn-blue);
+        }
+        .action-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .action-num {
+            min-width: 24px; height: 24px;
+            background: var(--dn-blue);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="header-bg"></div>
+    
+    <div class="container">
+        <nav class="fade-in">
+            <div class="logo">
+                <span>DN</span> <span>Solutions | InfraOps Copilot</span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <span style="font-size: 0.9rem; color: var(--text-dim);">Last Update: 2026.04.07 06:55 (KST)</span>
+                <div class="badge">PRO VERSION</div>
+            </div>
+        </nav>
+
+        <section class="stats-grid fade-in">
+            <div class="stat-card">
+                <div class="stat-label">Total Uptime</div>
+                <div class="stat-value">99.98%</div>
+                <div class="stat-trend up">▲ 0.02% (Global)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg. Latency</div>
+                <div class="stat-value">12.4ms</div>
+                <div class="stat-trend">Standard Deviation: 1.2ms</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Warnings</div>
+                <div class="stat-value" style="color: var(--status-warn);">1</div>
+                <div class="stat-trend">CN Branch High Packet Loss</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">AI Copilot Analysis</div>
+                <div class="stat-value">Active</div>
+                <div class="stat-trend up">Running on Gemini 1.5 Pro</div>
+            </div>
+        </section>
+
+        <div class="main-layout fade-in">
+            <div class="target-list">
+                <div class="section-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                    Real-time Infrastructure Status
+                </div>
+                
+                <div class="target-header target-item" style="font-weight: 700; color: var(--text-dim); border-bottom: 2px solid var(--border-color);">
+                    <div></div>
+                    <div>Target Name</div>
+                    <div>Endpoint</div>
+                    <div>Latency</div>
+                    <div>Status</div>
+                </div>
+
+                <div class="target-item">
+                    <div class="status-dot active"></div>
+                    <div>
+                        <div class="target-name">factory-dmz-prod-01</div>
+                        <div class="target-meta">DMZ Cluster | Seoul HQ</div>
+                    </div>
+                    <div class="target-meta">172.16.42.105</div>
+                    <div class="target-name">4.2ms</div>
+                    <div style="color: var(--status-ok);">Healthy</div>
+                </div>
+
+                <div class="target-item">
+                    <div class="status-dot active"></div>
+                    <div>
+                        <div class="target-name">hq-core-switch-04</div>
+                        <div class="target-meta">Core Network | Backbone</div>
+                    </div>
+                    <div class="target-meta">10.0.0.1</div>
+                    <div class="target-name">0.8ms</div>
+                    <div style="color: var(--status-ok);">Healthy</div>
+                </div>
+
+                <div class="target-item">
+                    <div class="status-dot error" style="background: var(--status-warn); box-shadow: none;"></div>
+                    <div>
+                        <div class="target-name">cn-branch-gw-external</div>
+                        <div class="target-meta">China Branch | Gateway</div>
+                    </div>
+                    <div class="target-meta">203.0.113.88</div>
+                    <div class="target-name" style="color: var(--status-err);">245ms</div>
+                    <div style="color: var(--status-warn);">Latency Warning</div>
+                </div>
+
+                <div class="target-item">
+                    <div class="status-dot error"></div>
+                    <div>
+                        <div class="target-name">eu-mirror-dns-02</div>
+                        <div class="target-meta">Europe Mirror | Cloud</div>
+                    </div>
+                    <div class="target-meta">8.8.8.8</div>
+                    <div class="target-name">---</div>
+                    <div style="color: var(--status-err);">Unreachable</div>
+                </div>
+            </div>
+
+            <div class="copilot-panel">
+                <div class="copilot-header">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    AI COPILOT ANALYSIS
+                </div>
+                
+                <div class="stat-label">Critical Event Detected</div>
+                <div style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">EU Mirror Mirror Service Down</div>
+
+                <div class="ai-message">
+                    <strong>분석 결과:</strong> 유럽 지역 미러링 서버(8.8.8.8)가 응답하지 않습니다. DNS 질의 실패가 아닌 라우팅 문제로 판단되며, 현재 Frankfurt 리전의 해저 광케이블 점검 작업과 연관이 있을 가능성이 높습니다.
+                </div>
+
+                <div class="stat-label" style="margin-bottom: 0.75rem;">Recommended Actions (Runbook v1.2)</div>
+                
+                <div class="action-item">
+                    <div class="action-num">1</div>
+                    <div>보조 미러 서버(US-East)로 트래픽 즉시 우회 (Auto-failover 대기 중)</div>
+                </div>
+                <div class="action-item">
+                    <div class="action-num">2</div>
+                    <div>현지 ISP 공급자(Deutsche Telekom) 장애 공지 확인</div>
+                </div>
+                <div class="action-item" style="opacity: 0.6;">
+                    <div class="action-num">3</div>
+                    <div>관리자 최종 승인 시 복구 스크립트 실행</div>
+                </div>
+
+                <button style="width: 100%; padding: 1rem; background: var(--dn-blue); border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer; margin-top: 1rem;">
+                    조치 스크립트 실행 승인
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

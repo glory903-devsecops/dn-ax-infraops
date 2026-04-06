@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DN Solutions | InfraOps Copilot{% endblock %}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="container" style="max-width: 1440px; margin: 0 auto; padding: 2rem;">
+        <nav style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+            <div style="font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px;">
+                <span style="color: var(--dn-blue);">DN</span> <span style="opacity: 0.8; color: white;">Solutions | InfraOps Copilot</span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div style="background: rgba(0, 94, 187, 0.1); border: 1px solid var(--dn-blue); color: var(--dn-blue); padding: 5px 15px; border-radius: 999px; font-size: 0.8rem; font-weight: 600;">PRO VERSION</div>
+            </div>
+        </nav>
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
