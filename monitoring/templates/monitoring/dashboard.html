@@ -5,29 +5,29 @@
 <!-- Header Stats -->
 <section style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2.5rem;">
     <div class="glass-card" style="padding: 1.5rem; position: relative; overflow: hidden;">
-        <div style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05rem;">Total Availability</div>
+        <div style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05rem;">전체 가동률</div>
         <div style="font-size: 2rem; font-weight: 800; color: var(--dn-blue-light);">99.98%</div>
         <div style="color: var(--status-ok); font-size: 0.75rem; margin-top: 0.5rem; display: flex; align-items: center; gap: 0.25rem;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"></polyline></svg>
-            0.01% vs Last Week
+            지난주 대비 0.01% 상승
         </div>
     </div>
     <div class="glass-card" style="padding: 1.5rem;">
-        <div style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05rem;">Managed Nodes</div>
+        <div style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05rem;">관리 노드 수</div>
         <div style="font-size: 2rem; font-weight: 800;">{{ targets.count|default:"13" }}</div>
-        <div style="font-size: 0.75rem; margin-top: 0.5rem; color: var(--text-dim);">DN Global Business Sites</div>
+        <div style="font-size: 0.75rem; margin-top: 0.5rem; color: var(--text-dim);">DN 글로벌 사업장 통합</div>
     </div>
     <div class="glass-card" style="padding: 1.5rem; border-left: 4px solid var(--status-error);">
-        <div style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05rem;">Active Incidents</div>
+        <div style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05rem;">활성 장애</div>
         <div style="font-size: 2rem; font-weight: 800; color: var(--status-error);">{{ active_events.count }}</div>
-        <div style="font-size: 0.75rem; margin-top: 0.5rem; color: var(--status-error);">Critical Intervention Required</div>
+        <div style="font-size: 0.75rem; margin-top: 0.5rem; color: var(--status-error);">즉시 조치 필요</div>
     </div>
     <div class="glass-card" style="padding: 1.5rem; background: linear-gradient(135deg, rgba(0, 94, 187, 0.1) 0%, transparent 100%);">
-        <div style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05rem;">AI Copilot Engine</div>
+        <div style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05rem;">AI 코파일럿 엔진</div>
         <div style="font-size: 2rem; font-weight: 800;">ON</div>
         <div style="color: var(--status-ok); font-size: 0.75rem; margin-top: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
             <div style="width: 8px; height: 8px; background: var(--status-ok); border-radius: 50%; box-shadow: 0 0 10px var(--status-ok);"></div>
-            Connected to GPT-4o
+            GPT-4o 분석 활성화됨
         </div>
     </div>
 </section>
@@ -40,10 +40,10 @@
         <div style="padding: 1.5rem 2rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
             <div style="font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 0.75rem;">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                DN Network Topology Overview
+                인프라 토폴로지 감시 현황
             </div>
             <div style="padding: 0.4rem 0.8rem; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.8rem; color: var(--text-dim);">
-                Last Scan: <span id="current-time"></span>
+                최근 스캔: <span id="current-time"></span>
             </div>
         </div>
         
@@ -51,10 +51,10 @@
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="color: var(--text-dim); text-align: left; font-size: 0.85rem; border-bottom: 1px solid var(--border-color);">
-                        <th style="padding: 1rem 0.5rem;">Target Node</th>
-                        <th style="padding: 1rem 0.5rem;">Site / Description</th>
-                        <th style="padding: 1rem 0.5rem;">Primary IP</th>
-                        <th style="padding: 1rem 0.5rem; text-align: right;">Health</th>
+                        <th style="padding: 1rem 0.5rem;">대상 노드 (Asset)</th>
+                        <th style="padding: 1rem 0.5rem;">지점 및 상세 설명</th>
+                        <th style="padding: 1rem 0.5rem;">IP 주소</th>
+                        <th style="padding: 1rem 0.5rem; text-align: right;">상태</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,7 +66,7 @@
                         <td style="padding: 1.25rem 0.5rem; text-align: right;">
                             <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.6rem; background: rgba(16, 185, 129, 0.1); border-radius: 20px; color: var(--status-ok); font-size: 0.75rem; font-weight: 700;">
                                 <div style="width: 6px; height: 6px; background: var(--status-ok); border-radius: 50%;"></div>
-                                ACTIVE
+                                정상 가동
                             </div>
                         </td>
                     </tr>
@@ -83,9 +83,9 @@
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
                 <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--dn-blue-light); font-weight: 800; font-size: 0.9rem; letter-spacing: 0.05rem;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12L2.69 6.5"></path><path d="M12 12V21.98"></path><path d="M12 12L21.31 6.5"></path></svg>
-                    AI COPILOT ANALYSIS
+                    AI 분석 레포트
                 </div>
-                <div style="padding: 0.2rem 0.6rem; background: var(--status-error); border-radius: 4px; font-size: 0.7rem; font-weight: 900; color: white;">CRITICAL</div>
+                <div style="padding: 0.2rem 0.6rem; background: var(--status-error); border-radius: 4px; font-size: 0.7rem; font-weight: 900; color: white;">긴급 장애</div>
             </div>
             
             <div style="margin-bottom: 1.5rem; border-left: 2px solid var(--border-color); padding-left: 1rem;">
@@ -94,12 +94,12 @@
             </div>
 
             <div style="background: rgba(0, 94, 187, 0.1); padding: 1.25rem; border-radius: 12px; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.05);">
-                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.5rem; text-transform: uppercase;">Runbook Summary</div>
+                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.5rem; text-transform: uppercase;">런북 대응 요약</div>
                 {{ event.copilot_analysis.summary }}
             </div>
 
             <div style="margin-bottom: 1.5rem;">
-                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase;">Primary Causes</div>
+                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase;">예상 원인 분석</div>
                 <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
                     {% for cause in event.copilot_analysis.causes %}
                     <span style="padding: 0.3rem 0.7rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-size: 0.75rem; color: var(--status-warn);"># {{ cause }}</span>
@@ -108,7 +108,7 @@
             </div>
 
             <div style="margin-bottom: 1.5rem;">
-                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase;">Step-by-Step Remediation</div>
+                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase;">단계별 조치 가이드</div>
                 <ul style="list-style: none; padding: 0;">
                     {% for action in event.copilot_analysis.recommended_actions %}
                     <li style="display: flex; gap: 0.75rem; margin-bottom: 0.8rem; font-size: 0.85rem; align-items: flex-start;">
@@ -119,15 +119,15 @@
                 </ul>
             </div>
 
-            <button class="btn-primary" style="width: 100%; justify-content: center; font-weight: 800; padding: 1rem;" onclick="alert('[DN-AI] 조치 스크립트 실행 승인됨: 런북 절차에 따라 자동 복구 시퀸스를 시작합니다.')">
-                EXECUTE REMEDIATION
+            <button class="btn-primary" style="width: 100%; justify-content: center; font-weight: 800; padding: 1rem;" onclick="alert('[DN-AI] 조치 스크립트 실행 승인됨: 런북 절차에 따라 자동 복구 시나리오를 시작합니다.')">
+                자동 복구 실행 (Auto Remediate)
             </button>
         </div>
         {% empty %}
         <div class="glass-card" style="padding: 3rem; text-align: center; color: var(--text-dim); background: rgba(255,255,255,0.02);">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem; opacity: 0.5;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-            <div style="font-weight: 700; color: white; margin-bottom: 0.5rem;">All Systems Nominal</div>
-            장애 이벤트가 없습니다.
+            <div style="font-weight: 700; color: white; margin-bottom: 0.5rem;">시스템 상태 정상</div>
+            현재 감지된 장애 이벤트가 없습니다.
         </div>
         {% endfor %}
     </div>
