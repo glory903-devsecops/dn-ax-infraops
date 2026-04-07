@@ -2,6 +2,17 @@
 {% load static %}
 
 {% block content %}
+<!-- Page Header with Link to History -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1 style="margin: 0; font-size: 1.8rem; font-weight: 800; color: white; display: flex; align-items: center; gap: 0.75rem;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--dn-blue-light)" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+        통합 인프라 자산 관리 현황
+    </h1>
+    <a href="/reports/" class="btn-primary" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); font-size: 0.9rem; padding: 0.6rem 1.2rem; text-decoration: none; color: white; display: flex; align-items: center; gap: 0.5rem;">
+        📊 AI 분석 레포트 기록
+    </a>
+</div>
+
 <!-- Header Stats -->
 <section style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2.5rem;">
     <div class="glass-card" style="padding: 1.5rem; position: relative; overflow: hidden;">
@@ -37,36 +48,45 @@
     
     <!-- Left Column: Infrastructure Status -->
     <div class="glass-card" style="padding: 0; overflow: hidden;">
-        <div style="padding: 1.5rem 2rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-            <div style="font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 0.75rem;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                글로벌 인프라 자산 관제 현황
-            </div>
-            <div style="padding: 0.4rem 0.8rem; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.8rem; color: var(--text-dim);">
-                최근 스캔: <span id="current-time"></span>
+        <div style="padding: 1.5rem 2rem; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 0.75rem;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    통합 인프라 자산 목록 (Total: {{ managed_nodes_count|default:"1,024" }})
+                </div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <div style="position: relative;">
+                        <input type="text" id="asset-search" placeholder="자산명, IP 검색..." onkeyup="filterAssets()" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: 8px; color: white; padding: 0.5rem 1rem 0.5rem 2.2rem; font-size: 0.85rem; width: 220px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2.5" style="position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </div>
+                    <button class="btn-primary" onclick="downloadCSV()" style="font-size: 0.8rem; padding: 0.5rem 1rem; background: rgba(0, 94, 187, 0.2); border: 1px solid var(--dn-blue-light);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        CSV 출력
+                    </button>
+                </div>
             </div>
         </div>
         
-        <div style="padding: 1rem 2rem 2rem;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="color: var(--text-dim); text-align: left; font-size: 0.85rem; border-bottom: 1px solid var(--border-color);">
-                        <th style="padding: 1rem 0.5rem;">대상 노드 (Asset)</th>
-                        <th style="padding: 1rem 0.5rem;">지점 및 상세 설명</th>
-                        <th style="padding: 1rem 0.5rem;">IP 주소</th>
-                        <th style="padding: 1rem 0.5rem; text-align: right;">상태</th>
+        <div id="asset-table-container" style="padding: 0; max-height: 550px; overflow-y: auto;">
+            <table id="asset-table" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                <thead style="position: sticky; top: 0; background: var(--bg-dark); z-index: 10;">
+                    <tr style="color: var(--text-dim); text-align: left; font-size: 0.85rem; border-bottom: 2px solid var(--border-color);">
+                        <th style="padding: 1.2rem 1.5rem; cursor: pointer; width: 30%;" onclick="sortAssets(0)">대상 노드 ↕</th>
+                        <th style="padding: 1.2rem 1.5rem; cursor: pointer; width: 40%;" onclick="sortAssets(1)">설명 및 지점 ↕</th>
+                        <th style="padding: 1.2rem 1.5rem; cursor: pointer; width: 18%;" onclick="sortAssets(2)">IP 주소 ↕</th>
+                        <th style="padding: 1.2rem 1.5rem; text-align: right; width: 12%;">상태</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for target in targets %}
-                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
-                        <td style="padding: 1.25rem 0.5rem; font-weight: 700; color: var(--dn-blue-light);">{{ target.name }}</td>
-                        <td style="padding: 1.25rem 0.5rem; font-size: 0.85rem; color: var(--text-dim);">{{ target.description }}</td>
-                        <td style="padding: 1.25rem 0.5rem; font-family: monospace; font-size: 0.9rem;">{{ target.ip_address }}</td>
-                        <td style="padding: 1.25rem 0.5rem; text-align: right;">
-                            <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.6rem; background: rgba(16, 185, 129, 0.1); border-radius: 20px; color: var(--status-ok); font-size: 0.75rem; font-weight: 700;">
-                                <div style="width: 6px; height: 6px; background: var(--status-ok); border-radius: 50%;"></div>
-                                정상 가동
+                    <tr class="asset-row" style="border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.2s;">
+                        <td style="padding: 1.1rem 1.5rem; font-weight: 700; color: var(--dn-blue-light); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ target.name }}</td>
+                        <td style="padding: 1.1rem 1.5rem; font-size: 0.85rem; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ target.description }}</td>
+                        <td style="padding: 1.1rem 1.5rem; font-family: monospace; font-size: 0.9rem;">{{ target.ip_address }}</td>
+                        <td style="padding: 1.1rem 1.5rem; text-align: right;">
+                            <div style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.2rem 0.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 4px; color: var(--status-ok); font-size: 0.7rem; font-weight: 700;">
+                                <div style="width: 5px; height: 5px; background: var(--status-ok); border-radius: 50%;"></div>
+                                {{ target.status|default:"NORMAL" }}
                             </div>
                         </td>
                     </tr>
@@ -76,70 +96,37 @@
         </div>
     </div>
 
-    <!-- Right Column: AI Copilot Analysis -->
-    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+    <!-- Right Column: AI Copilot Analysis (Multi-Event Clipped View) -->
+    <div id="ai-sidebar" style="display: flex; flex-direction: column; gap: 1rem; max-height: 85vh; overflow-y: auto; padding-right: 0.5rem;">
         {% for event in active_events %}
-        <div class="glass-card" style="padding: 1.5rem; border: 1px solid rgba(0, 94, 187, 0.4); background: linear-gradient(165deg, rgba(0, 94, 187, 0.2) 0%, rgba(13, 17, 23, 1) 100%);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--dn-blue-light); font-weight: 800; font-size: 0.9rem; letter-spacing: 0.05rem;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12L2.69 6.5"></path><path d="M12 12V21.98"></path><path d="M12 12L21.31 6.5"></path></svg>
-                    AI 분석 레포트
+        <div class="glass-card" style="padding: 1.5rem; border: 1px solid rgba(0, 94, 187, 0.4); background: linear-gradient(165deg, rgba(0, 94, 187, 0.15) 0%, rgba(13, 17, 23, 0.95) 100%); flex-shrink: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.2rem;">
+                <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--dn-blue-light); font-weight: 800; font-size: 0.85rem; letter-spacing: 0.05rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12L2.69 6.5"></path><path d="M12 12V21.98"></path><path d="M12 12L21.31 6.5"></path></svg>
+                    LIVE AI ANALYSIS
                 </div>
-                <div style="padding: 0.2rem 0.6rem; background: var(--status-error); border-radius: 4px; font-size: 0.7rem; font-weight: 900; color: white;">긴급 장애</div>
+                <div style="padding: 0.2rem 0.5rem; background: var(--status-error); border-radius: 4px; font-size: 0.65rem; font-weight: 900; color: white;">#{{ event.id }}</div>
             </div>
             
-            <div style="margin-bottom: 1.5rem; border-left: 2px solid var(--border-color); padding-left: 1rem;">
-                <div style="font-size: 1.2rem; font-weight: 800; margin-bottom: 0.25rem;">{{ event.target.name }}</div>
-                <div style="color: var(--status-warn); font-size: 0.85rem; font-weight: 600;">{{ event.message }}</div>
+            <div style="margin-bottom: 1rem; border-left: 2px solid var(--dn-blue-light); padding-left: 0.75rem;">
+                <div style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.2rem;">{{ event.target.name }}</div>
+                <div style="color: var(--status-warn); font-size: 0.8rem; font-weight: 600; line-height: 1.4;">{{ event.message }}</div>
             </div>
 
-            <div style="background: rgba(0, 94, 187, 0.1); padding: 1.25rem; border-radius: 12px; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.05);">
-                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.5rem; text-transform: uppercase;">런북 대응 요약</div>
+            <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; font-size: 0.85rem; line-height: 1.5; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05);">
                 {{ event.copilot_analysis.summary }}
             </div>
 
-            <div style="margin-bottom: 1.5rem;">
-                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase;">예상 원인 분석</div>
-                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                    {% for cause in event.copilot_analysis.causes %}
-                    <span style="padding: 0.3rem 0.7rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-size: 0.75rem; color: var(--status-warn);"># {{ cause }}</span>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div style="margin-bottom: 1.5rem;">
-                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase;">단계별 조치 가이드</div>
-                <ul id="remediation-steps" style="list-style: none; padding: 0;">
-                    {% for action in event.copilot_analysis.recommended_actions %}
-                    <li style="display: flex; gap: 0.75rem; margin-bottom: 0.8rem; font-size: 0.85rem; align-items: flex-start;">
-                        <div class="step-num" style="width: 20px; height: 20px; background: var(--dn-blue); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0; margin-top: 2px;">{{ forloop.counter }}</div>
-                        <div style="color: #e5e7eb;">{{ action }}</div>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <div id="remediation-progress" style="display: none; margin-bottom: 1.5rem;">
-                <div style="height: 4px; width: 100%; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; margin-bottom: 0.5rem;">
-                    <div id="progress-bar" style="height: 100%; width: 0%; background: var(--status-ok); transition: width 0.5s ease;"></div>
-                </div>
-                <div id="progress-text" style="font-size: 0.75rem; color: var(--status-ok); font-weight: 700;">AI 시퀸스 초기화 중...</div>
-            </div>
-
-            <div style="display: flex; gap: 0.75rem;">
-                <button id="remediation-btn" class="btn-primary" style="flex: 1; justify-content: center; font-weight: 800; padding: 1rem;" onclick="startRemediationSequence()">
-                    AI 런북 절차 자동 수행
-                </button>
-                <button class="btn-primary" style="flex: 0.6; justify-content: center; background: rgba(0, 94, 187, 0.4); border: 1px solid var(--dn-blue-light); font-size: 0.85rem;" onclick="openEvolveModal('{{ event.event_type }}')">
-                    ✨ Runbook Update
-                </button>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <button class="btn-primary" style="flex: 1; font-size: 0.8rem; padding: 0.75rem;" onclick="startRemediationSequence('{{ event.id }}')">자동 복구 실행</button>
+                <button class="btn-primary" style="background: transparent; border: 1px solid var(--border-color); font-size: 0.75rem; padding: 0.75rem;" onclick="openEvolveModal('{{ event.event_type }}')">Update</button>
             </div>
         </div>
         {% empty %}
         <div class="glass-card" style="padding: 3rem; text-align: center; color: var(--text-dim); background: rgba(255,255,255,0.02);">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem; opacity: 0.5;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-            <div style="font-weight: 700; color: white; margin-bottom: 0.5rem;">시스템 상태 정상</div>
-            현재 감지된 장애 이벤트가 없습니다.
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem; opacity: 0.3;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <div style="font-weight: 700; color: white; margin-bottom: 0.5rem;">통합 관제 상태 정상</div>
+            모든 자산이 안정적입니다.
         </div>
         {% endfor %}
     </div>
@@ -173,101 +160,55 @@
     </a>
 </div>
 
-<script>
-    function updateTime() {
-        const now = new Date();
-        document.getElementById('current-time').textContent = now.toLocaleTimeString('ko-KR');
-    }
-    setInterval(updateTime, 1000);
-    updateTime();
-
-    function openEvolveModal(eventType) {
-        document.getElementById('evolveEventType').value = eventType;
-        document.getElementById('evolveModal').style.display = 'flex';
-        document.getElementById('evolveInsight').focus();
+    // 3. 자산 필터링 (Search)
+    function filterAssets() {
+        const query = document.getElementById('asset-search').value.toLowerCase();
+        const rows = document.querySelectorAll('.asset-row');
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(query) ? '' : 'none';
+        });
     }
 
-    function closeEvolveModal() {
-        document.getElementById('evolveModal').style.display = 'none';
-        document.getElementById('evolveInsight').value = '';
-    }
-
-    async function submitEvolution() {
-        const eventType = document.getElementById('evolveEventType').value;
-        const insight = document.getElementById('evolveInsight').value;
+    // 4. 자산 정렬 (Sort)
+    let sortDirection = 1;
+    function sortAssets(columnIndex) {
+        const table = document.getElementById('asset-table');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
         
-        if (!insight.trim()) {
-            alert('Please provide the update details (SRE Insight).');
-            return;
-        }
-
-        const btn = event.target;
-        btn.disabled = true;
-        btn.textContent = 'AI 분석 및 업데이트 중...';
-
-        try {
-            const response = await fetch('/api/update-runbook/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({
-                    event_type: eventType,
-                    insight: insight
-                })
-            });
-
-            const result = await response.json();
-            if (response.ok) {
-                alert('✨ ' + result.message + '\nRunbook knowledge has been successfully evolved.');
-                closeEvolveModal();
-                location.reload(); 
-            } else {
-                alert('오류: ' + result.error);
-            }
-        } catch (e) {
-            alert('요청 중 오류가 발생했습니다.');
-        } finally {
-            btn.disabled = false;
-            btn.textContent = 'Runbook Update 요청';
-        }
+        sortDirection *= -1;
+        rows.sort((a, b) => {
+            const aVal = a.cells[columnIndex].innerText.trim();
+            const bVal = b.cells[columnIndex].innerText.trim();
+            return aVal.localeCompare(bVal, 'en', { numeric: true }) * sortDirection;
+        });
+        
+        rows.forEach(row => tbody.appendChild(row));
     }
 
-    async function startRemediationSequence() {
-        const btn = document.getElementById('remediation-btn');
-        const progressDiv = document.getElementById('remediation-progress');
-        const progressBar = document.getElementById('progress-bar');
-        const progressText = document.getElementById('progress-text');
-        const steps = document.querySelectorAll('#remediation-steps li');
+    // 5. CSV 다운로드
+    function downloadCSV() {
+        const rows = Array.from(document.querySelectorAll('#asset-table tr'));
+        const csvContent = rows.map(row => {
+            const cells = Array.from(row.querySelectorAll('th, td'));
+            return cells.map(cell => `"${cell.innerText.replace(/"/g, '""')}"`).join(',');
+        }).join('\n');
 
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-        progressDiv.style.display = 'block';
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `dn_infra_assets_${new Date().toISOString().slice(0,10)}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
 
-        const stages = [
-            { p: 20, t: '인벤토리 및 장치 상태 검증 중...', s: 0 },
-            { p: 50, t: 'Cisco CLI 명령어 송출 및 매개변수 확인...', s: 1 },
-            { p: 80, t: '백업 회선 트래픽 전환 및 정합성 체크...', s: 2 },
-            { p: 100, t: '장애 복구 완료: 시스템 정상 가동 중', s: -1 }
-        ];
-
-        for (let i = 0; i < stages.length; i++) {
-            await new Promise(r => setTimeout(r, 1200));
-            progressBar.style.width = stages[i].p + '%';
-            progressText.innerText = stages[i].t;
-            
-            if (stages[i].s >= 0 && steps[stages[i].s]) {
-                const stepNum = steps[stages[i].s].querySelector('.step-num');
-                stepNum.style.background = 'var(--status-ok)';
-                stepNum.innerHTML = '✓';
-                steps[stages[i].s].style.opacity = '1';
-            }
-        }
-
-        alert('✅ [DN-AI] 모든 런북 절차가 성공적으로 수행되었습니다.\n\n대상 노드: DN-HQ-Core-Backbone\n상태: ACTIVE');
-        btn.textContent = '복구 완료 (NORMAL)';
-        btn.style.background = 'var(--status-ok)';
+    async function startRemediationSequence(eventId) {
+        // 이전에 구현했던 자동 복합 로직 (시뮬레이션)
+        alert('✅ [AI Orchestrator] #' + eventId + ' 장애에 대한 자동 복구 시퀸스를 시작합니다.');
     }
 </script>
 {% endblock %}

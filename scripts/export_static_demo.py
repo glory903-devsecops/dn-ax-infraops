@@ -2,47 +2,98 @@ import os
 import sys
 import django
 import shutil
+import random
 from django.template.loader import render_to_string
 from django.conf import settings
+from datetime import datetime, timedelta
 
-# 1. Django 가상 환경 설정 (Static Export 전용)
+# 1. Django 가상 환경 설정
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
-# 2. 데이터 모킹 (Mocking) - DB 연결 없이 정적 페이지를 위해 직접 데이터 구성
 def get_mock_data():
+    # 1. 1,000개 자산 데이터 생성
+    locations = ["서울 본사(HQ)", "창원 1공장", "창원 2공장", "미국 법인(USA)", "독일 법인(Germany)", "중국 법인(China)", "인도 법인(India)"]
+    asset_types = ["Core Switch", "L3 Switch", "L2 Edge", "Firewall", "Router", "VPN Gateway", "Storage NAS"]
+    statuses = ["NORMAL", "NORMAL", "NORMAL", "NORMAL", "NORMAL", "WARNING", "DOWN"] # 확률적 상태 부여
+    
+    targets = []
+    for i in range(1, 1001):
+        loc = random.choice(locations)
+        atype = random.choice(asset_types)
+        status = random.choice(statuses)
+        ip = f"10.{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(1, 254)}"
+        
+        targets.append({
+            'name': f"DN-{loc[:2]}-{atype[:3]}-{i:04d}",
+            'ip_address': ip,
+            'description': f"{loc} 소속 {atype} 자산 (Node-{i})",
+            'status': status
+        })
+
+    # 2. 최근 활성 이벤트 (대시보드 사이드바용 - 최대 3개)
+    active_events = [
+        {
+            'id': 1001,
+            'target': {'name': 'DN-HQ-Core-0051'},
+            'event_type': 'LINK_DOWN',
+            'message': 'Interface Ethernet 1/1 (Primary) is DOWN.',
+            'created_at': datetime.now(),
+            'copilot_analysis': {
+                "summary": "DN 본사 코어 스위치 1번 포트 단절 감지. 백업 회선으로 자동 Failover가 진행 중입니다.",
+                "causes": ["외부 광케이블 물리적 손상 의심", "SFP 모듈 장애"],
+                "recommended_actions": ["Cisco Port-Status 대조", "통신사 선로 점검 티켓 요청"]
+            }
+        },
+        {
+            'id': 1002,
+            'target': {'name': 'DN-창원-L3-0124'},
+            'event_type': 'LATENCY_HIGH',
+            'message': 'Average Latency > 300ms detected.',
+            'created_at': datetime.now() - timedelta(minutes=15),
+            'copilot_analysis': {
+                "summary": "창원 1공장 L3 스위치 응답 지연 발생. 특정 포트의 트래픽 폭증이 감지되었습니다.",
+                "causes": ["네트워크 루프 발생", "대역폭 점유율 임계치 초과"],
+                "recommended_actions": ["L2 MAC 플래핑 확인", "Storm Control 설정 임시 적용"]
+            }
+        },
+        {
+            'id': 1003,
+            'target': {'name': 'DN-USA-VPN-0008'},
+            'event_type': 'SECURITY_AUTH_FAIL',
+            'message': 'Multiple failed login attempts from 203.0.113.5',
+            'created_at': datetime.now() - timedelta(minutes=45),
+            'copilot_analysis': {
+                "summary": "미국 법인 VPN 게이트웨이에 대한 무차별 대입 공격 의심 징후가 포착되었습니다.",
+                "causes": ["외부 IP 무차별 대입(Brute Force)", "유출된 계정 정보 사용 시도"],
+                "recommended_actions": ["해당 IP 방화벽 차단 리스트 등록", "2단계 인증 강제 적용 검토"]
+            }
+        }
+    ]
+
+    # 3. 과거 AI 분석 레포트 히스토리 (20개 이상)
+    report_history = []
+    for i in range(1, 26):
+        date = datetime.now() - timedelta(days=i, hours=random.randint(1, 23))
+        report_history.append({
+            'id': i,
+            'date': date.strftime("%Y-%m-%d %H:%M"),
+            'target_name': f"DN-OLD-NODE-{i:03d}",
+            'event_type': random.choice(['LINK_DOWN', 'TEMP_HIGH', 'CPU_SPIKE', 'BGP_FLAP']),
+            'summary': f"AI 분석 레포트 #{i}: 해당 노드의 자산 안정성 검토 및 조치가 완료되었습니다.",
+            'status': 'RESOLVED'
+        })
+
     return {
         'uptime_avg': 99.98,
         'managed_nodes_count': 1024,
-        'targets': [
-            {'name': 'DN-HQ-Core-Backbone', 'ip_address': '10.0.0.1', 'description': '서울 본사 코어 백본 스위치 (Nexus 9K)'},
-            {'name': 'DN-Factory-CW-Line1', 'ip_address': '172.16.10.1', 'description': '창원 공장 생산 1라인 게이트웨이'},
-            {'name': 'DN-Global-Sales-EU', 'ip_address': '192.168.100.5', 'description': '유럽 법인(Germany) 거점 VPN 라우터'},
-            {'name': 'DN-R&D-Center-ASIC', 'ip_address': '10.50.0.10', 'description': 'R&D 센터 전용 설계 인프라 노드'},
-            {'name': 'DN-Cloud-Bridge-AWS', 'ip_address': '44.200.1.5', 'description': '하이브리드 클라우드 전용 회선 (Direct Connect)'},
-            {'name': 'DN-Cloud-Storage-NAS', 'ip_address': '10.10.20.50', 'description': '글로벌 통합 파일 스토리지 (NetApp)'},
-        ],
-        'active_events': [
-            {
-                'target': {'name': 'DN-HQ-Core-Backbone'},
-                'event_type': 'LINK_DOWN',
-                'message': 'Interface Ethernet 1/1 (Primary) is DOWN. Protocol status down.',
-                'copilot_analysis': {
-                    "summary": "DN-HQ-Core-Backbone에서 주 회선(Primary) 단절이 감지되어 백업 회선으로 자동 Failover 중입니다.",
-                    "causes": ["외부 광케이블 굴착 공사 물리적 단절", "SFP 모듈 하드웨어 결함"],
-                    "recommended_actions": [
-                        "Cisco 'show interface status' 명령어로 포트 상태 확인",
-                        "통신사(KT) 글로벌 회선 장애 센터 티켓 오픈 확인",
-                        "백업 트래픽 점유율 모니터링"
-                    ]
-                }
-            }
-        ]
+        'targets': targets,
+        'active_events': active_events,
+        'report_history': report_history
     }
 
 def export():
-    # 출력 경로 설정 (docs 폴더)
     dist_dir = os.path.join(settings.BASE_DIR, 'docs')
     if not os.path.exists(dist_dir):
         os.makedirs(dist_dir)
@@ -54,54 +105,29 @@ def export():
         shutil.rmtree(static_dst)
     shutil.copytree(static_src, static_dst)
 
-    # 렌더링
     context = get_mock_data()
-    html_content = render_to_string('monitoring/dashboard.html', context)
 
-    # 1. GitHub Pages 상대 경로 보정
-    html_content = html_content.replace('href="/static/', 'href="./static/')
-    html_content = html_content.replace('src="/static/', 'src="./static/')
-
-    # 2. 정적 데모용 지식 진화(Evolution) 시뮬레이션 코드 주입
-    # 실시간 API 대신 자바스크립트로 지식 업데이트 연출
-    simulation_script = """
-    async function submitEvolution() {
-        const insight = document.getElementById('evolveInsight').value;
-        if (!insight.trim()) { alert('지침 내용을 입력해주세요.'); return; }
-        
-        const btn = event.target;
-        btn.disabled = true;
-        btn.innerHTML = 'AI 지식 분석 및 통합 중... (시뮬레이션)';
-        
-        // 지능형 학습 연출을 위한 딜레이
-        await new Promise(r => setTimeout(r, 2000));
-        
-        alert('✨ [AI 지능형 학습 완료]\\n\\n입력하신 노하우를 분석하여 런북 지식 베이스를 v1.1로 업데이트했습니다.\\n\\n추가된 내용: ' + insight.substring(0,30) + '...');
-        
-        // 화면 레이아웃에 실시간 지식 추가 효과 연출
-        const aiPanel = document.querySelector('.glass-card[style*="linear-gradient"]');
-        if (aiPanel) {
-            const lessonsLearned = document.createElement('div');
-            lessonsLearned.style.marginTop = '1.5rem';
-            lessonsLearned.style.padding = '1rem';
-            lessonsLearned.style.background = 'rgba(16, 185, 129, 0.1)';
-            lessonsLearned.style.border = '1px dashed var(--status-ok)';
-            lessonsLearned.style.borderRadius = '8px';
-            lessonsLearned.innerHTML = '<div style="font-size:0.75rem; font-weight:800; color:var(--status-ok); margin-bottom:0.5rem;">📝 LESSONS LEARNED (AUTO-UPDATED)</div><div style="font-size:0.85rem; color:#e5e7eb;">' + insight + '</div>';
-            aiPanel.appendChild(lessonsLearned);
-        }
-        
-        closeEvolveModal();
-    }
-    """
-    # 원본 submitEvolution 함수를 시뮬레이션용으로 교체
-    html_content = html_content.split('async function submitEvolution()')[0] + simulation_script + html_content.split('async function submitEvolution()')[1].split('}')[1]
-
-    # 결과 저장
+    # 1. Dashboard (index.html) 추출
+    html_dashboard = render_to_string('monitoring/dashboard.html', context)
+    html_dashboard = html_dashboard.replace('href="/static/', 'href="./static/')
+    html_dashboard = html_dashboard.replace('src="/static/', 'src="./static/')
+    # URL 보정: reports.html로 연결되도록
+    html_dashboard = html_dashboard.replace('href="/reports/"', 'href="./reports.html"')
+    
     with open(os.path.join(dist_dir, 'index.html'), 'w', encoding='utf-8') as f:
-        f.write(html_content)
+        f.write(html_dashboard)
 
-    print(f"✨ Static Website (with Knowledge Evolution simulation) exported to: {dist_dir}/index.html")
+    # 2. AI Report List (reports.html) 추출
+    html_reports = render_to_string('monitoring/report_list.html', context)
+    html_reports = html_reports.replace('href="/static/', 'href="./static/')
+    html_reports = html_reports.replace('src="/static/', 'src="./static/')
+    # Dashboard로 돌아오기 링크 보정
+    html_reports = html_reports.replace('href="/"', 'href="./index.html"')
+    
+    with open(os.path.join(dist_dir, 'reports.html'), 'w', encoding='utf-8') as f:
+        f.write(html_reports)
+
+    print(f"✨ Static Website (Dashboard & Reports) exported to: {dist_dir}")
 
 if __name__ == "__main__":
     export()

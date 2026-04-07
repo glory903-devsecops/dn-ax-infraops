@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Page Header -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
+    <div>
+        <a href="/" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--dn-blue-light); text-decoration: none; font-size: 0.9rem; margin-bottom: 1rem; font-weight: 600;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            대시보드로 돌아가기
+        </a>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; color: white;">📚 AI 분석 레포트 아카이브</h1>
+        <p style="color: var(--text-dim); margin-top: 0.5rem;">과거에 발생한 인프라 장애 분석 및 AI 대응 이력을 관리합니다.</p>
+    </div>
+    <div style="text-align: right;">
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--dn-blue-light);">{{ report_history|length }}+</div>
+        <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">누적 분석 리포트</div>
+    </div>
+</div>
+
+<!-- Report List Grid -->
+<div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+    {% for report in report_history %}
+    <div class="glass-card" style="padding: 1.5rem; display: grid; grid-template-columns: 140px 1fr 120px; align-items: center; gap: 2rem; transition: transform 0.3s ease, border-color 0.3s ease;" onmouseover="this.style.borderColor='var(--dn-blue-light)'; this.style.transform='translateX(10px)'" onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='none'">
+        <!-- Date -->
+        <div style="color: var(--text-dim); font-family: monospace; font-size: 0.9rem; font-weight: 600;">
+            {{ report.date }}
+        </div>
+        
+        <!-- Main Content -->
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                <span style="font-weight: 800; color: white; font-size: 1.1rem;">{{ report.target_name }}</span>
+                <span style="padding: 0.2rem 0.6rem; background: rgba(0, 94, 187, 0.15); border: 1px solid rgba(0, 94, 187, 0.3); border-radius: 4px; font-size: 0.7rem; color: var(--dn-blue-light); font-weight: 700;">{{ report.event_type }}</span>
+            </div>
+            <p style="margin: 0; color: var(--text-dim); font-size: 0.9rem; line-height: 1.5;">{{ report.summary }}</p>
+        </div>
+        
+        <!-- Action -->
+        <div style="text-align: right;">
+            <div style="display: inline-block; padding: 0.4rem 0.8rem; background: rgba(16, 185, 129, 0.1); color: var(--status-ok); border-radius: 6px; font-size: 0.75rem; font-weight: 800;">
+                RESOLVED
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="glass-card" style="padding: 4rem; text-align: center; color: var(--text-dim);">
+        저장된 분석 리포트가 없습니다.
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .glass-card:hover {
+        background: linear-gradient(90deg, rgba(0, 94, 187, 0.1) 0%, rgba(255,255,255,0.02) 100%);
+    }
+</style>
+{% endblock %}
