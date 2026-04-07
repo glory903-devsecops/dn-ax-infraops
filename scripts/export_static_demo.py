@@ -14,6 +14,7 @@ django.setup()
 def get_mock_data():
     return {
         'uptime_avg': 99.98,
+        'managed_nodes_count': 1024,
         'targets': [
             {'name': 'DN-HQ-Core-Backbone', 'ip_address': '10.0.0.1', 'description': '서울 본사 코어 백본 스위치 (Nexus 9K)'},
             {'name': 'DN-Factory-CW-Line1', 'ip_address': '172.16.10.1', 'description': '창원 공장 생산 1라인 게이트웨이'},
