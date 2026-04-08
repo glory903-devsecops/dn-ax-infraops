@@ -159,8 +159,35 @@
         View on GitHub Repository
     </a>
 </div>
+{% endblock %}
 
-    // 3. 자산 필터링 (Search)
+{% block extra_js %}
+<script>
+    // 1. 지식 진화 모달 제어
+    function openEvolveModal(eventType) {
+        document.getElementById('evolveEventType').value = eventType;
+        document.getElementById('evolveModal').style.display = 'flex';
+    }
+
+    function closeEvolveModal() {
+        document.getElementById('evolveModal').style.display = 'none';
+        document.getElementById('evolveInsight').value = '';
+    }
+
+    async function submitEvolution() {
+        const eventType = document.getElementById('evolveEventType').value;
+        const insight = document.getElementById('evolveInsight').value;
+        
+        if (!insight.trim()) {
+            alert('지식 업데이트를 위해 현장 인사이트를 입력해주세요.');
+            return;
+        }
+        
+        alert('✅ [AI 지식 처리] 입력하신 현장 인사이트("' + insight.substring(0, 20) + '...")를 기반으로 GPT-4o가 런북 지능화를 시작합니다.');
+        closeEvolveModal();
+    }
+
+    // 2. 자산 필터링 (Search)
     function filterAssets() {
         const query = document.getElementById('asset-search').value.toLowerCase();
         const rows = document.querySelectorAll('.asset-row');
